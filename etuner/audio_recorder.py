@@ -21,9 +21,14 @@ class AudioRecorder(object):
             rate=rate,
             input=True,
             frames_per_buffer=frames_per_buffer)
-        self._frames_per_buffer = frames_per_buffer
         self._logger = logging.getLogger('AudioRecorder')
         self._executor = ThreadPoolExecutor(max_workers=1)
+        self._rate = rate
+        self._frames_per_buffer = frames_per_buffer
+
+    @property
+    def rate(self):
+        return self._rate
 
     def is_active(self):
         return self._pa and self._stream and self._stream.is_active()
