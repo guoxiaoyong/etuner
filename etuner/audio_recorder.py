@@ -34,11 +34,10 @@ class AudioRecorder(object):
           return
         self._stream.start_stream()
 
-    def read():
+    def read(self):
         if not self.is_active():
           return
-
-        data = stream.read(self._frames_per_buffer)
+        data = self._stream.read(self._frames_per_buffer)
         return np.fromstring(data, np.int16)
 
     async def async_read():
