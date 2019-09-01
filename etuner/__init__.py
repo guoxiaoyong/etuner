@@ -6,9 +6,15 @@ import numpy as np
 from .audio_recorder import AudioRecorder
 
 
-def find_freq(samples):
-    fft = np.fft.rfft(np.array(buf) * window)
-    freq = (np.abs(fft[imin:imax]).argmax() + imin) * FREQ_STEP
+def find_freq(sound_samples, rate):
+    n = int(2 ** np.ceil(np.log2(len(sound_samples))))
+    fft = np.fft.rfft(sound_samples, n)
+    fft_abs = np.abs(fft)
+    if np.max(fft_abs) < 50000:
+        freq = None
+    else:
+        freq = np.argmax(fft_abs) * rate / n
+    return freq
 
 
 class ETuner(object):
@@ -23,11 +29,12 @@ class ETuner(object):
         while self._audio_recorder.is_active():
             data = self._audio_recorder.read()
             self._buffer.extend(data)
-            print(len(data))
             if len(self._buffer) < self._buffer_size:
                 continue
-            #data = np.array()
-            #freq = find_freq(data)
+            sound_samples = np.array(self._buffer)
+            freq = find_freq(data, self._audio_recorder.rate)
+            if freq is not None:
+                print(freq)
 
     def stop(self):
         self._audio_recorder.stop()

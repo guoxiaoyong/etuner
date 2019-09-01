@@ -1,5 +1,7 @@
 from setuptools import setup
 
+requires = ['numpy', 'pyaudio'],
+
 setup(name='etuner',
       version='0.0.1',
       description='Musical instrument tuner',
@@ -7,8 +9,8 @@ setup(name='etuner',
       author='Guo Xiaoyong',
       author_email='guo.xiaoyong@gmail.com',
       url='https://github.com/guoxiaoyong/etuner',
-      install_requires=['enumpy', 'pyaudio'],
-      setup_requires=['numpy', 'pyaudio'],
+      install_requires=requires,
+      setup_requires=requires,
       packages=['etuner'],
       include_package_data=True,
       entry_points={
