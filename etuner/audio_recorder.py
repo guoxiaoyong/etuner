@@ -13,6 +13,7 @@ class AudioRecorder(object):
         *,
         rate=22050,
         frames_per_buffer=2048,
+        use_async=False,
     ):
         self._pa = pyaudio.PyAudio()
         self._stream = self._pa.open(
@@ -22,7 +23,9 @@ class AudioRecorder(object):
             input=True,
             frames_per_buffer=frames_per_buffer)
         self._logger = logging.getLogger('AudioRecorder')
-        self._executor = ThreadPoolExecutor(max_workers=1)
+        self._executor = None
+        if use_async:
+            self._executor = ThreadPoolExecutor(max_workers=1)
         self._rate = rate
         self._frames_per_buffer = frames_per_buffer
 
@@ -46,6 +49,8 @@ class AudioRecorder(object):
         return np.fromstring(data, np.int16)
 
     async def async_read():
+        if self._executor is None:
+            return
         while stream.is_active():
           await self._executor.submit(self.read)
 
